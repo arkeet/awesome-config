@@ -70,8 +70,10 @@ mylauncher = awful.widget.launcher({ image = image(beautiful.awesome_icon),
 
 -- {{{ Wibox
 -- Create a textclock widget
+os.setlocale('ja_JP.UTF-8')
 mytextclock = awful.widget.textclock({ align = "right" },
-    " %a %b %d, %H:%M:%S ", 1)
+    --" %a %b %d, %H:%M:%S ", 1)
+    "%m.%d(%a) %H:%M:%S", 0.5)
 
 -- Create a systray
 mysystray = widget({ type = "systray" })
