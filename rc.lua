@@ -23,6 +23,8 @@ editor_cmd = editor
 -- However, you can use another modifier like Mod1, but it may interact with others.
 modkey = "Mod4"
 
+separator = " <span color='#666666'>┃</span> "
+
 -- Table of layouts to cover with awful.layout.inc, order matters.
 layouts =
 {
@@ -73,7 +75,7 @@ mylauncher = awful.widget.launcher({ image = image(beautiful.awesome_icon),
 os.setlocale('ja_JP.UTF-8')
 mytextclock = awful.widget.textclock({ align = "right" },
     --" %a %b %d, %H:%M:%S ", 1)
-    "%m.%d(%a) %H:%M:%S", 0.5)
+    separator .. "%m.%d(%a) %H:%M:%S ", 0.5)
 
 -- Create a systray
 mysystray = widget({ type = "systray" })
@@ -158,12 +160,12 @@ function batterytext(path)
     local time_h = math.floor(time / 3600)
     local time_m = math.floor((time - 3600 * time_h) / 60)
 
-    if status:match("Discharging") then
+    if status:match("Discharging") and false then
         if time < 1800 then
-            timeformat = '<span background="red" foreground="black">' ..
+            timeformat = "<span bgcolor='red' color='black'>" ..
                 timeformat .. '</span>'
         elseif power_now > 10000000 then
-            timeformat = '<span background="yellow" foreground="black">' ..
+            timeformat = "<span bgcolor='yellow' color='black'>" ..
                 timeformat .. '</span>'
         end
     end
@@ -179,11 +181,11 @@ function batteryinfo()
     for path in dirlist:lines() do
         local text = batterytext(path)
         if text then
-            totaltext = totaltext .. text .. " | "
+            totaltext = totaltext .. separator .. text
         end
     end
     dirlist:close()
-    batterywidget.text = " " .. totaltext
+    batterywidget.text = totaltext
 end
 
 function mpdinfo()
