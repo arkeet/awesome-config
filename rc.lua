@@ -138,7 +138,7 @@ function batterytext(path)
     local status = read("status")
 
     local left = 0
-    local timeformat = " [%s%d:%02d]"
+    local timeformat = "%s%d:%02d"
     if status:match("Charging") then
         left = energy_full - energy_now
         timeprefix = "↑"
@@ -147,20 +147,30 @@ function batterytext(path)
         timeprefix = "↓"
     else
         timeprefix = "-"
-        timeformat = " [%s]"
+        timeformat = "%s"
     end
     if power_now <= 1000 then
-        timeformat = " [%s]"
+        timeformat = "%s"
     end
 
     local percent = math.min(round(energy_now / energy_full * 100, 1), 100)
-    local time = left / power_now
-    local time_h = math.floor(time)
-    local time_m = math.floor(time * 60) - 60 * time_h
+    local time = (left / power_now) * 3600
+    local time_h = math.floor(time / 3600)
+    local time_m = math.floor((time - 3600 * time_h) / 60)
+
+    if status:match("Discharging") then
+        if time < 1800 then
+            timeformat = '<span background="red" foreground="black">' ..
+                timeformat .. '</span>'
+        elseif power_now > 10000000 then
+            timeformat = '<span background="yellow" foreground="black">' ..
+                timeformat .. '</span>'
+        end
+    end
 
     local timestr = string.format(timeformat, timeprefix, time_h, time_m)
 
-    return string.format(" %.1f%%%s ", percent, timestr)
+    return string.format("%.1f%% %s", percent, timestr)
 end
 
 function batteryinfo()
@@ -169,11 +179,11 @@ function batteryinfo()
     for path in dirlist:lines() do
         local text = batterytext(path)
         if text then
-            totaltext = totaltext .. text
+            totaltext = totaltext .. text .. " | "
         end
     end
     dirlist:close()
-    batterywidget.text = totaltext
+    batterywidget.text = " " .. totaltext
 end
 
 function mpdinfo()
