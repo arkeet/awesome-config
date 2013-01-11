@@ -160,7 +160,7 @@ function batterytext(path)
     local time_h = math.floor(time / 3600)
     local time_m = math.floor((time - 3600 * time_h) / 60)
 
-    if status:match("Discharging") and false then
+    if status:match("Discharging") then
         if time < 1800 then
             timeformat = "<span bgcolor='red' color='black'>" ..
                 timeformat .. '</span>'
